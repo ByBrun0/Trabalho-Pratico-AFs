@@ -4,12 +4,10 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 EXEMPLOS_DIR = BASE_DIR / "exemplos"
+
+# Define a pasta de resultados e cria se não existir
 RESULTADOS_DIR = BASE_DIR / "resultados"
-
-# Cria a pasta automaticamente se ela não existir
-RESULTADOS_DIR.mkdir(exist_ok=True) 
-# ---------------------
-
+RESULTADOS_DIR.mkdir(exist_ok=True)
 
 PALAVRAS = EXEMPLOS_DIR / "palavras.txt"
 AF_PADRAO = EXEMPLOS_DIR / "af.json"
@@ -34,7 +32,8 @@ def menu() -> None:
     print("2 - Converter AFN em AFD")
     print("3 - Minimizar AFD")
     print("4 - Testar Palavras")
-    print("5 - Sair")
+    print("5 - Carregar/Trocar Arquivo (Reiniciar)")
+    print("6 - Sair")
 
 
 def submenu_testes() -> None:
@@ -79,19 +78,30 @@ def main() -> None:
         menu()
         opcao = input("Escolha uma opção: ").strip()
 
-        if opcao == '5':
+        if opcao == '6':
             print("Encerrando o programa...")
             break
+        
+        if opcao == '5':
+            print("\n[Trocar Arquivo]")
+            novo_automato = listar_e_escolher_arquivo()
+            if novo_automato:
+                automato = novo_automato
+            continue
 
         if opcao not in {'0', '1', '2', '3', '4'}:
             print("Opção inválida!")
             continue
 
-        if automato is None and opcao in {'0', '1', '2', '3', '4'}:
-            print("\nVocê precisa carregar um autômato primeiro.")
-            automato = listar_e_escolher_arquivo()
-            if automato is None: continue
-
+        if automato is None:
+            print("\nAVISO: Você precisa carregar um autômato primeiro.")
+            novo_automato = listar_e_escolher_arquivo()
+            if novo_automato:
+                automato = novo_automato
+            else:
+                continue
+            
+            continue
 
         # ================= CONVERSÕES =================
         if opcao == '0':
@@ -124,7 +134,25 @@ def main() -> None:
                     testar_via_terminal(automato)
 
                 elif sub == '2':
-                    testar_via_arquivo(automato, PALAVRAS)
+                    print("\n[Teste via arquivo]")
+                    # Lista arquivos txt da pasta exemplos para facilitar
+                    arquivos_txt = list(EXEMPLOS_DIR.glob("*.txt"))
+                    if arquivos_txt:
+                        print("Arquivos de texto encontrados:")
+                        for i, txt in enumerate(arquivos_txt):
+                            print(f"  [{i}] {txt.name}")
+                        try:
+                            idx = int(input("Escolha o número ou digite o caminho: "))
+                            if 0 <= idx < len(arquivos_txt):
+                                caminho = arquivos_txt[idx]
+                            else:
+                                caminho = input("Caminho inválido, digite manualmente: ")
+                        except ValueError:
+                             caminho = input("Caminho: ")
+                    else:
+                        caminho = input("Informe o caminho do arquivo de palavras: ")
+                        
+                    testar_via_arquivo(automato, caminho)
 
                 else:
                     print("Opção inválida!")

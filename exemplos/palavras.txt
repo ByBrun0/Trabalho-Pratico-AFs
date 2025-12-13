@@ -1,6 +1,8 @@
-aabbcc
+
 abc
-bc
+a
+b
+ab
 ba
-ca
-abx
+c
+x

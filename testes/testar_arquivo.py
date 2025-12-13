@@ -1,19 +1,33 @@
-from af_utils import transicoes_por_estado
+from af_utils import mover, fecho_lambda, estados_finais_compostos
+
 
 def aceita_palavra(af, palavra):
-    estados_atuais = set(af["estados_iniciais"])
-    mapa = transicoes_por_estado(af)
+    """
+    Simula a aceitação de uma palavra considerando AFN e Transições Lambda.
+    """
+    # 1. O estado atual começa como o Fecho-Lambda dos iniciais
+    # (Ou seja, onde consigo chegar sem ler nada?)
+    estados_iniciais = set(af["estados_iniciais"])
+    estados_atuais = fecho_lambda(af, estados_iniciais)
 
     for simbolo in palavra:
-        novos_estados = set()
-        for estado in estados_atuais:
-            for destino in mapa.get(estado, {}).get(simbolo, []):
-                novos_estados.add(destino)
-        estados_atuais = novos_estados
+        # 2. Verifica se o símbolo existe no alfabeto (opcional, mas bom pra debug)
+        # Se quiser ser rigoroso: if simbolo not in af['alfabeto']: return False
+        
+        # 3. Move consumindo o símbolo (passo padrão)
+        proximos_estados = mover(af, estados_atuais, simbolo)
+        
+        # 4. Imediatamente calcula o fecho-lambda dos destinos
+        # (Onde consigo chegar via lambda a partir dos novos estados?)
+        estados_atuais = fecho_lambda(af, proximos_estados)
+        
+        # Se morreu (conjunto vazio), já pode parar
         if not estados_atuais:
             break
 
-    return any(e in af["estados_finais"] for e in estados_atuais)
+    # 5. Verifica se sobrou algum estado final no conjunto atual
+    estados_finais = set(af["estados_finais"])
+    return estados_finais_compostos(estados_atuais, estados_finais)
 
 
 def testar_via_arquivo(af, caminho_arquivo):
