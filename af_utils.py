@@ -82,3 +82,20 @@ def estados_finais_compostos(estados_compostos: Set[str], estados_finais: Set[st
     Verifica se um estado composto contém algum estado final.
     """
     return not estados_compostos.isdisjoint(estados_finais)
+
+def transicoes_por_estado(af: dict) -> dict:
+    """
+    Organiza as transições do autômato por estado e símbolo.
+    Retorna um dicionário no formato:
+    {estado: {simbolo: [estados_destino]}}
+    """
+    mapa = {}
+
+    for origem, destino, simbolo in af["transicoes"]:
+        if origem not in mapa:
+            mapa[origem] = {}
+        if simbolo not in mapa[origem]:
+            mapa[origem][simbolo] = []
+        mapa[origem][simbolo].append(destino)
+
+    return mapa

@@ -1,4 +1,12 @@
 from io_utils import ler_automato_json, salvar_automato_json, imprimir_automato
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+EXEMPLOS_DIR = BASE_DIR / "exemplos"
+
+AF_PADRAO = EXEMPLOS_DIR / "af.json"
+AFN_LAMBDA_PADRAO = EXEMPLOS_DIR / "afn_lambda.json"
+
 
 # Conversões (serão implementadas nos respectivos arquivos)
 from conversoes.multi_ini_para_afn_lambda import converter as multi_ini_para_afn_lambda
@@ -7,8 +15,8 @@ from conversoes.afn_para_afd import converter as afn_para_afd
 from conversoes.minimizacao_afd import minimizar as minimizar_afd
 
 # Testes de palavras
-from testes.testar_terminal import testar_terminal
-from testes.testar_arquivo import testar_arquivo
+from testes.testar_terminal import testar_via_terminal
+from testes.testar_arquivo import testar_via_arquivo
 
 
 def menu() -> None:
@@ -28,10 +36,9 @@ def submenu_testes() -> None:
     print("0 - Voltar")
 
 
-def carregar_automato() -> dict:
-    caminho = input("Informe o caminho do arquivo JSON do autômato: ")
+def carregar_automato(caminho: Path) -> dict:
     automato = ler_automato_json(caminho)
-    print("\nAutômato carregado com sucesso!")
+    print(f"\nAutômato carregado com sucesso ({caminho.name})!")
     imprimir_automato(automato)
     return automato
 
@@ -52,7 +59,19 @@ def main() -> None:
             continue
 
         if automato is None:
-            automato = carregar_automato()
+            print("\nQual autômato deseja carregar?")
+            print("1 - AF")
+            print("2 - AFN-λ")
+            escolha = input("Escolha: ").strip()
+
+            if escolha == '1':
+                automato = carregar_automato(AF_PADRAO)
+            elif escolha == '2':
+                automato = carregar_automato(AFN_LAMBDA_PADRAO)
+            else:
+                print("Opção inválida!")
+                continue
+
 
         # ================= CONVERSÕES =================
         if opcao == '0':
@@ -82,12 +101,12 @@ def main() -> None:
 
                 elif sub == '1':
                     print("\n[Teste via terminal]")
-                    testar_terminal(automato)
+                    testar_via_terminal(automato)
 
                 elif sub == '2':
                     print("\n[Teste via arquivo]")
                     caminho = input("Informe o caminho do arquivo de palavras: ")
-                    testar_arquivo(automato, caminho)
+                    testar_via_arquivo(automato, caminho)
 
                 else:
                     print("Opção inválida!")
