@@ -1,0 +1,6 @@
+aabbcc
+abc
+bc
+ba
+ca
+abx

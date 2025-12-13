@@ -1,9 +1,17 @@
 from io_utils import ler_automato_json, salvar_automato_json, imprimir_automato
+import sys
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 EXEMPLOS_DIR = BASE_DIR / "exemplos"
+RESULTADOS_DIR = BASE_DIR / "resultados"
 
+# Cria a pasta automaticamente se ela não existir
+RESULTADOS_DIR.mkdir(exist_ok=True) 
+# ---------------------
+
+
+PALAVRAS = EXEMPLOS_DIR / "palavras.txt"
 AF_PADRAO = EXEMPLOS_DIR / "af.json"
 AFN_LAMBDA_PADRAO = EXEMPLOS_DIR / "afn_lambda.json"
 
@@ -42,6 +50,27 @@ def carregar_automato(caminho: Path) -> dict:
     imprimir_automato(automato)
     return automato
 
+def listar_e_escolher_arquivo() -> dict:
+    """Lista arquivos JSON na pasta exemplos e permite seleção numérica."""
+    arquivos = list(EXEMPLOS_DIR.glob("*.json"))
+    
+    if not arquivos:
+        print(f"Nenhum arquivo JSON encontrado em {EXEMPLOS_DIR}")
+        return None
+
+    print("\n--- Arquivos Disponíveis ---")
+    for i, arq in enumerate(arquivos):
+        print(f"[{i}] {arq.name}")
+
+    try:
+        escolha = int(input("Escolha o número do arquivo: "))
+        if 0 <= escolha < len(arquivos):
+            return carregar_automato(arquivos[escolha])
+        else:
+            print("Número inválido.")
+    except ValueError:
+        print("Entrada inválida.")
+    return None
 
 def main() -> None:
     automato = None
@@ -58,37 +87,29 @@ def main() -> None:
             print("Opção inválida!")
             continue
 
-        if automato is None:
-            print("\nQual autômato deseja carregar?")
-            print("1 - AF")
-            print("2 - AFN-λ")
-            escolha = input("Escolha: ").strip()
-
-            if escolha == '1':
-                automato = carregar_automato(AF_PADRAO)
-            elif escolha == '2':
-                automato = carregar_automato(AFN_LAMBDA_PADRAO)
-            else:
-                print("Opção inválida!")
-                continue
+        if automato is None and opcao in {'0', '1', '2', '3', '4'}:
+            print("\nVocê precisa carregar um autômato primeiro.")
+            automato = listar_e_escolher_arquivo()
+            if automato is None: continue
 
 
         # ================= CONVERSÕES =================
         if opcao == '0':
-            print("\n[0] Converter multiestado inicial em AFN-&")
             automato = multi_ini_para_afn_lambda(automato)
-
+            salvar_automato_json(automato, RESULTADOS_DIR / 'resultado_multi_ini.json')
+            
         elif opcao == '1':
-            print("\n[1] Converter AFN-& em AFN")
             automato = afn_lambda_para_afn(automato)
+            salvar_automato_json(automato, RESULTADOS_DIR / 'resultado_afn.json')
 
         elif opcao == '2':
-            print("\n[2] Converter AFN em AFD")
             automato = afn_para_afd(automato)
+            salvar_automato_json(automato, RESULTADOS_DIR / 'resultado_afd.json')
 
         elif opcao == '3':
-            print("\n[3] Minimizar AFD")
+            print("Aviso: O algoritmo assume que o AFD é total (tem transições para todos símbolos).")
             automato = minimizar_afd(automato)
+            salvar_automato_json(automato, RESULTADOS_DIR / 'resultado_minimo.json')
 
         # ================= TESTES =================
         elif opcao == '4':
@@ -100,22 +121,18 @@ def main() -> None:
                     break
 
                 elif sub == '1':
-                    print("\n[Teste via terminal]")
                     testar_via_terminal(automato)
 
                 elif sub == '2':
-                    print("\n[Teste via arquivo]")
-                    caminho = input("Informe o caminho do arquivo de palavras: ")
-                    testar_via_arquivo(automato, caminho)
+                    testar_via_arquivo(automato, PALAVRAS)
 
                 else:
                     print("Opção inválida!")
 
         # ================= SAÍDA =================
         if opcao in {'0', '1', '2', '3'}:
-            print("\n(Quando implementado, o novo autômato será exibido e salvo)")
+            print("\n--- Autômato Resultante ---")
             imprimir_automato(automato)
-            salvar_automato_json(automato, 'saida.json')
 
 
 if __name__ == '__main__':

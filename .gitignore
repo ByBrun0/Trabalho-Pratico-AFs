@@ -1,0 +1,11 @@
+# Ignorar arquivos compilados do Python
+__pycache__/
+*.pyc
+
+# Ignorar a pasta de resultados gerados pelo seu programa
+resultados/
+
+# Ignorar arquivos de sistema e IDE (opcional, mas recomendado)
+.DS_Store
+.vscode/
+.idea/
