@@ -16,7 +16,7 @@ O sistema implementa e integra as seguintes funcionalidades:
 
 - Conversão de **AF com múltiplos estados iniciais** para **AFN-λ**;
 - Conversão de **AFN-λ para AFN** (remoção de transições λ);
-- Conversão de **AFN para AFD** (construção dos subconjuntos);
+- Conversão de **AFN para AFD** (construção dos subconjuntos, com criação de estado de erro e renomeação de estados);
 - **Minimização de AFD**;
 - **Teste de palavras** em autômatos:
   - Via terminal;
@@ -28,18 +28,15 @@ Todas as operações seguem rigorosamente a teoria apresentada em sala.
 
 ## 🧠 Visão Geral de Funcionamento
 
-O arquivo principal do projeto é `main.py`. Ao executá-lo, o programa:
+O arquivo principal do projeto é `main.py`. Ao executá-lo, o sistema:
 
-1. Solicita ao usuário um **arquivo JSON contendo a definição de um autômato**;
-2. Exibe um **menu interativo** com opções de conversão e testes;
-3. Permite aplicar sucessivas conversões sobre o autômato carregado;
-4. Exibe o autômato resultante no terminal;
-5. Salva automaticamente o autômato convertido em um novo arquivo JSON;
-6. Permite testar palavras no autômato atual.
-
-> Observação: após cada conversão, o autômato resultante passa a ser o autômato corrente para as próximas operações.
-
----
+1. **Lista automaticamente** os arquivos `.json` disponíveis na pasta `exemplos/`;
+2. Solicita que o usuário selecione um autômato inicial por número;
+3. Exibe um **menu interativo** de operações;
+4. Após cada conversão, o autômato resultante é:
+   - Exibido no terminal (com estados renomeados e organizados);
+   - Salvo automaticamente na pasta `resultados/`;
+   - Definido como o autômato atual para a próxima operação.
 
 ## 📥 Clone do Projeto
 
@@ -68,6 +65,7 @@ git clone git@github.com:seu-usuario/trabalho-lfa-automatos.git
 trabalho_lfa/
 ├── main.py
 ├── io_utils.py
+├── resultados/          <-- Arquivos gerados (ignorados pelo git)
 ├── conversoes/
 │   ├── __init__.py
 │   ├── multi_ini_para_afn_lambda.py
@@ -78,7 +76,7 @@ trabalho_lfa/
 │   ├── __init__.py
 │   ├── testar_terminal.py
 │   └── testar_arquivo.py
-├── exemplos/
+├── exemplos/            <-- Coloque seus JSONs de entrada aqui
 │   ├── af_exemplo.json
 │   └── palavras.txt
 ├── README.md
@@ -107,6 +105,27 @@ Os autômatos devem ser descritos em arquivos `.json` no seguinte formato:
 Para AFN-λ, utiliza-se o símbolo `"&"` para representar transições lambda.
 
 ---
+
+## ⚠️ Guia de Uso (Fluxo de Conversão)
+
+Este sistema funciona como um **pipeline (funil) de conversão**. O usuário deve selecionar a opção condizente com o **estado atual** do autômato carregado.
+
+Siga a ordem lógica abaixo para evitar inconsistências:
+
+1. **Se o autômato tem múltiplos estados iniciais:**
+   - Execute a **Opção 0**: *Multiestado → AFN-λ*
+   
+2. **Se o autômato é um AFN-λ (tem transições `&`):**
+   - Execute a **Opção 1**: *AFN-λ → AFN*
+
+3. **Se o autômato é um AFN (não determinístico, sem `&`):**
+   - Execute a **Opção 2**: *AFN → AFD*
+   - *Nota:* Esta etapa gera um **AFD Completo** (com estado de erro explícito se necessário) e **renomeia** os estados para um formato amigável (ex: `S0`, `S1`, `q_erro`).
+
+4. **Se o autômato é um AFD:**
+   - Execute a **Opção 3**: *Minimizar AFD*
+
+> **Importante:** Se você carregar um arquivo que já é um **AFN**, não selecione a opção 0. Vá direto para a opção 2. O sistema assume que o usuário sabe em qual etapa do processo o arquivo de entrada se encaixa.
 
 ## ▶️ Execução
 
