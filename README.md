@@ -54,33 +54,70 @@ git clone git@github.com:seu-usuario/trabalho-lfa-automatos.git
 
 ## 🚀 Requisitos
 
+### Versão Python
 - **Python 3.10** ou superior  
 - Não há dependências externas além da biblioteca padrão do Python
+
+### Versão Pascal (FPC)
+- **Free Pascal Compiler 3.2.2** ou superior
+  - Linux: `sudo apt install fpc` (Debian/Ubuntu) ou equivalente para sua distro
+  - macOS: `brew install fpc`
+  - Windows: Baixar em [https://www.freepascal.org](https://www.freepascal.org)
 
 ---
 
 ## 📂 Estrutura do Projeto
 
 ```text
-trabalho_lfa/
-├── main.py
-├── io_utils.py
-├── resultados/          <-- Arquivos gerados (ignorados pelo git)
-├── conversoes/
+Trabalho-Pratico-AFs/
+├── main.py                           <-- Entrada principal (Python)
+├── af_utils.py                       <-- Utilidades para autômatos
+├── io_utils.py                       <-- I/O JSON
+├── README.md
+├── .gitignore
+│
+├── conversoes/                       <-- Conversões em Python
 │   ├── __init__.py
 │   ├── multi_ini_para_afn_lambda.py
 │   ├── afn_lambda_para_afn.py
 │   ├── afn_para_afd.py
 │   └── minimizacao_afd.py
-├── testes/
+│
+├── testes/                           <-- Testes em Python
 │   ├── __init__.py
 │   ├── testar_terminal.py
 │   └── testar_arquivo.py
-├── exemplos/            <-- Coloque seus JSONs de entrada aqui
-│   ├── af_exemplo.json
+│
+├── exemplos/                         <-- Entrada: JSONs de autômatos e palavras
+│   ├── af.json
+│   ├── afn_lambda.json
+│   ├── teste1.json
+│   ├── teste2.json
+│   ├── teste3.json
+│   ├── teste4.json
+│   ├── teste_completo.json
 │   └── palavras.txt
-├── README.md
-└── .gitignore
+│
+├── resultados/                       <-- Saída: JSONs gerados (ignorado por git)
+│   ├── resultado_multi_ini.json
+│   ├── resultado_afn.json
+│   ├── resultado_afd.json
+│   └── resultado_minimo.json
+│
+└── pascal/                           <-- Implementação em Free Pascal
+    ├── main.pas                      <-- Entrada principal (FPC)
+    ├── af_utils.pas                  <-- Utilidades para autômatos
+    ├── io_utils.pas                  <-- I/O JSON (fpjson)
+    │
+    ├── conversoes/                   <-- Conversões em Pascal
+    │   ├── multi_ini_para_afn_lambda.pas
+    │   ├── afn_lambda_para_afn.pas
+    │   ├── afn_para_afd.pas
+    │   └── minimizacao_afd.pas
+    │
+    └── testes/                       <-- Testes em Pascal
+        ├── testar_terminal.pas
+        └── testar_arquivo.pas
 ```
 
 ---
