@@ -143,6 +143,47 @@ py main.py
 
 ---
 
+## 🐘 Implementação em Pascal (FPC)
+
+Além da versão em Python, o repositório traz uma porta completa em Pascal (Free Pascal 3.2.2) no diretório `pascal/`, reproduzindo as mesmas funcionalidades de conversão e teste de palavras.
+
+### Estrutura Pascal
+- `pascal/main.pas`: programa CLI com o mesmo menu do Python; lê/gera JSON em `../exemplos` e `../resultados`.
+- `pascal/af_utils.pas`: tipos do autômato, fecho-λ, mover, checagens de determinismo e finais.
+- `pascal/io_utils.pas`: leitura/escrita de autômatos em JSON e impressão formatada no terminal.
+- `pascal/conversoes/`:
+   - `multi_ini_para_afn_lambda.pas`: cria estado inicial único com transições λ.
+   - `afn_lambda_para_afn.pas`: remove λ via fecho-λ.
+   - `afn_para_afd.pas`: construção de subconjuntos, estado de erro e renomeação (`S0`, `S1`, `q_erro`).
+   - `minimizacao_afd.pas`: minimização via refinamento de partições.
+- `pascal/testes/`:
+   - `testar_terminal.pas`: aceita/rejeita palavras digitadas.
+   - `testar_arquivo.pas`: testa palavras de um `.txt` linha a linha.
+
+### Compilar
+Execute os comandos dentro de `pascal/` (paths relativos já apontam para `../exemplos` e `../resultados`):
+
+```bash
+cd pascal
+fpc -Fu. -Fuconversoes -Futestes main.pas
+```
+
+Gerará o binário `main` (ou `main.exe` no Windows). Se quiser limpar antes, remova `main` e os `.o`/`.ppu` gerados.
+
+### Executar
+
+```bash
+cd pascal
+./main
+```
+
+Fluxo de uso no CLI Pascal:
+1. Opção 5: escolha um JSON em `../exemplos/` (ex.: `af.json`, `afn_lambda.json`).
+2. Opções 0–3: conversões; saída em `../resultados/` (`resultado_multi_ini.json`, `resultado_afn.json`, `resultado_afd.json`, `resultado_minimo.json`).
+3. Opção 4: testar palavras (1=terminal, 2=arquivo `.txt` em `../exemplos/` ou caminho manual).
+
+---
+
 ## 🧪 Testes de Palavras
 
 O sistema permite testar palavras:
