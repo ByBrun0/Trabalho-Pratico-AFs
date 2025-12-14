@@ -5,6 +5,23 @@ __pycache__/
 # Ignorar a pasta de resultados gerados pelo seu programa
 resultados/
 
+# Ignorar arquivos compilados e temporários do Free Pascal
+pascal/*.o
+pascal/*.ppu
+pascal/*.a
+pascal/*.exe
+pascal/main
+pascal/lib/
+pascal/Link.res
+
+# Ignorar unidades compiladas dos subdiretórios Pascal
+pascal/conversoes/*.o
+pascal/conversoes/*.ppu
+pascal/conversoes/*.a
+pascal/testes/*.o
+pascal/testes/*.ppu
+pascal/testes/*.a
+
 # Ignorar arquivos de sistema e IDE (opcional, mas recomendado)
 .DS_Store
 .vscode/
