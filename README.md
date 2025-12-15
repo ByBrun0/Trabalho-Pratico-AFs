@@ -468,6 +468,15 @@ O resultado exibido será:
 
 <div align="center">
 
+**Paulo Henrique de Souza Hemetrio**  
+*Estudante de Engenharia de Computação @ CEFET-MG*  
+
+[![Gmail][gmail-badge]][gmail-paulo]
+
+</div>
+
+<div align="center">
+
 **João Paulo da Cunha Faria**  
 *Estudante de Engenharia de Computação @ CEFET-MG*  
 
@@ -479,6 +488,7 @@ O resultado exibido será:
 [gmail-badge]: https://img.shields.io/badge/-Gmail-D14836?style=for-the-badge&logo=Gmail&logoColor=white
 [gmail-bruno]: mailto:bruno.santos@aluno.cefetmg.br
 [gmail-joao]: mailto:joao@aluno.cefetmg.br
+[gmail-paulo]: mailto:henriquepaulete40@gmail.com
 
 [cefet-badge]: https://img.shields.io/badge/CEFET--MG-Campus%20V-blue?logo=academia
 [cefet-url]: https://www.cefetmg.br/
